@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SchoolPro — Apprendre autrement</title>
+
+<style>
+:root {
+  --bg: #060b19;
+  --panel: #101a31;
+  --cyan: #42e8ff;
+  --blue: #5677ff;
+  --txt: #edf5ff;
+  --muted: #a7b8d5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 15% 0%, #142b54 0, transparent 36%),
+    linear-gradient(145deg, #050916, #0a1124);
+  color: var(--txt);
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 6%;
+  border-bottom: 1px solid #294568;
+  background: #071022cc;
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(12px);
+  z-index: 2;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.logo span { color: var(--cyan); }
+
+button, .btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 17px;
+  background: linear-gradient(110deg, #1677ff, #22cce8);
+  color: #00101c;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+main {
+  max-width: 1120px;
+  margin: auto;
+  padding: 32px 18px;
+}
+
+.hero { padding: 36px 8px 24px; }
+
+.hero h1 {
+  font-size: clamp(32px, 6vw, 58px);
+  margin: 0 0 12px;
+}
+
+.hero h1 span {
+  color: var(--cyan);
+  text-shadow: 0 0 22px #27cfff88;
+}
+
+.muted {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: linear-gradient(145deg, #14233fdd, #0b1429);
+  border: 1px solid #294b70;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 10px 35px #0005;
+}
+
+.card h3 { margin-top: 0; }
+
+.card p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 7px 0 14px;
+  border-radius: 10px;
+  border: 1px solid #355477;
+  background: #071225;
+  color: white;
+}
+
+label { color: #c6d9f2; }
+
+section { margin: 28px 0; }
+
+.hidden { display: none; }
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 18px 0;
+}
+
+.tabs button {
+  background: #1a2d4c;
+  color: #e9f8ff;
+}
+
+.tabs button.active {
+  background: #20c9e8;
+  color: #041321;
+}
+
+.notice {
+  padding: 12px;
+  border-radius: 10px;
+  background: #142b48;
+  margin: 12px 0;
+}
+
+.lesson {
+  border-left: 3px solid var(--cyan);
+  padding: 12px 16px;
+  margin: 12px 0;
+  background: #0e1b32;
+  border-radius: 8px;
+}
+
+footer {
+  text-align: center;
+  color: #8195b4;
+  padding: 35px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">SCHOOL<span>PRO</span> ✦</div>
+  <div>
+    <button id="loginBtn" onclick="showAuth()">Connexion</button>
+    <button onclick="logout()" id="logoutBtn" class="hidden">Déconnexion</button>
+  </div>
+</header>
+
+<main>
+
+<div class="hero">
+  <p class="muted">LA PLATEFORME POUR APPRENDRE ET EXPLORER</p>
+  <h1>Apprends. Explore.<br>
+  <span>Dépasse tes limites.</span></h1>
+  <p class="muted">
+    Des cours du collège, des quiz interactifs,
+    l'histoire et les mystères de l'univers réunis au même endroit.
+  </p>
+</div>
+
+<!-- CONNEXION -->
+<section id="auth" class="card hidden">
+  <h2>Ton espace SchoolPro</h2>
+
+  <div class="tabs">
+    <button class="active" onclick="setAuthMode('login', this)">
+      Connexion
+    </button>
+    <button onclick="setAuthMode('register', this)">
+      Créer un compte élève
+    </button>
+  </div>
+
+  <label>Nom (inscription)</label>
+  <input id="name" placeholder="Ton prénom">
+
+  <label>E-mail</label>
+  <input id="email" type="email" placeholder="exemple@email.com">
+
+  <label>Mot de passe</label>
+  <input id="password" type="password"
+         placeholder="8 caractères minimum">
+
+  <button onclick="authenticate()">Continuer</button>
+  <p id="authMsg" class="muted"></p>
+</section>
+
+<!-- MATIÈRES -->
+<section>
+  <h2>📚 Les matières</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>📐 Mathématiques</h3>
+      <p>Nombres, calculs, géométrie, fonctions et problèmes.</p>
+    </div>
+
+    <div class="card">
+      <h3>✍️ Français</h3>
+      <p>Grammaire, conjugaison, orthographe et littérature.</p>
+    </div>
+
+    <div class="card">
+      <h3>🌍 Histoire-Géo</h3>
+      <p>De l'Antiquité au monde contemporain, cartes et territoires.</p>
+    </div>
+
+    <div class="card">
+      <h3>🧪 Sciences</h3>
+      <p>SVT, physique-chimie, expériences et découvertes.</p>
+    </div>
+
+    <div class="card">
+      <h3>🇬🇧 Anglais</h3>
+      <p>Vocabulaire, compréhension et expression.</p>
+    </div>
+
+    <div class="card">
+      <h3>💻 Technologie</h3>
+      <p>Numérique, objets techniques et programmation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ESPACE -->
+<section>
+  <h2>🚀 Explore l'espace</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>☀️ Le Soleil</h3>
+      <p>Notre étoile fournit lumière et énergie à la Terre.</p>
+    </div>
+
+    <div class="card">
+      <h3>🪐 Les planètes</h3>
+      <p>
+        Mercure, Vénus, Terre, Mars, Jupiter,
+        Saturne, Uranus et Neptune.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>🌌 La Voie lactée</h3>
+      <p>Notre galaxie contient des milliards d'étoiles.</p>
+    </div>
+
+    <div class="card">
+      <h3>🌙 La Lune</h3>
+      <p>Le satellite naturel de la Terre, avec ses phases.</p>
+    </div>
+  </div>
+
+  <p class="muted">
+    Pour approfondir :
+    <a href="https://science.nasa.gov/"
+       target="_blank" rel="noopener">NASA Science</a>.
+  </p>
+</section>
+
+<!-- QUIZ -->
+<section>
+  <h2>🧠 Mini quiz</h2>
+
+  <div class="card">
+    <p><b>Quelle est la planète la plus proche du Soleil ?</b></p>
+
+    <div class="tabs">
+      <button onclick="answer('Vénus')">Vénus</button>
+      <button onclick="answer('Mercure')">Mercure</button>
+      <button onclick="answer('Mars')">Mars</button>
+    </div>
+
+    <p id="quizResult" class="muted"></p>
+  </div>
+</section>
+
+<!-- LEÇONS -->
+<section>
+  <h2>📖 Leçons publiées</h2>
+  <div id="lessons" class="card">Chargement des leçons…</div>
+</section>
+
+<!-- PROFESSEUR -->
+<section id="teacher" class="card hidden">
+  <h2>🧑‍🏫 Espace professeur</h2>
+  <p class="muted">Publie une leçon pour les élèves.</p>
+
+  <input id="ltitle" placeholder="Titre de la leçon">
+  <input id="subject" placeholder="Matière">
+
+  <select id="grade">
+    <option>6e</option>
+    <option>5e</option>
+    <option>4e</option>
+    <option>3e</option>
+  </select>
+
+  <textarea id="content" rows="5"
+    placeholder="Contenu de la leçon"></textarea>
+
+  <button onclick="publishLesson()">Publier</button>
+  <p id="teacherMsg"></p>
+</section>
+
+<!-- CRÉATEUR -->
+<section id="creator" class="card hidden">
+  <h2>👑 Panel créateur</h2>
+
+  <h3>Créer un compte professeur</h3>
+
+  <input id="tname" placeholder="Nom du professeur">
+  <input id="temail" placeholder="E-mail">
+  <input id="tpass" type="password"
+    placeholder="Mot de passe (8 caractères minimum)">
+
+  <button onclick="createTeacher()">Créer le professeur</button>
+  <p id="creatorMsg"></p>
+
+  <h3>Comptes inscrits</h3>
+  <button onclick="loadUsers()">Afficher les utilisateurs</button>
+  <div id="users"></div>
+</section>
+
+</main>
+
+<footer>SchoolPro · Apprendre sans limites</footer>
+
+<script>
+let authMode = "login";
+let currentUser = null;
+
+const $ = id => document.getElementById(id);
+
+function showAuth() {
+  $("auth").classList.toggle("hidden");
+}
+
+function setAuthMode(mode, button) {
+  authMode = mode;
+  button.parentNode.querySelectorAll("button")
+    .forEach(b => b.classList.remove("active"));
+  button.classList.add("active");
+}
+
+async function api(url, options = {}) {
+  const r = await fetch(url, {
+    headers: { "Content-Type": "application/json" },
+    ...options
+  });
+
+  const d = await r.json();
+
+  if (!r.ok) throw Error(d.error || "Erreur");
+  return d;
+}
+
+async function authenticate() {
+  try {
+    const body = {
+      email: $("email").value,
+      password: $("password").value,
+      name: $("name").value
+    };
+
+    const d = await api(
+      "/api/auth/" + (authMode === "register" ? "register" : "login"),
+      {
+        method: "POST",
+        body: JSON.stringify(body)
+      }
+    );
+
+    currentUser = d.user;
+    renderUser();
+    $("authMsg").textContent = "Bienvenue " + currentUser.name + " !";
+
+  } catch (e) {
+    $("authMsg").textContent = e.message;
+  }
+}
+
+function renderUser() {
+  if (!currentUser) return;
+
+  $("loginBtn").classList.add("hidden");
+  $("logoutBtn").classList.remove("hidden");
+  $("auth").classList.add("hidden");
+
+  $("teacher").classList.toggle(
+    "hidden",
+    !["professeur", "createur"].includes(currentUser.role)
+  );
+
+  $("creator").classList.toggle(
+    "hidden",
+    currentUser.role !== "createur"
+  );
+}
+
+async function logout() {
+  await api("/api/auth/logout", { method: "POST" });
+  currentUser = null;
+  location.reload();
+}
+
+function answer(a) {
+  $("quizResult").textContent =
+    a === "Mercure"
+      ? "Bravo ! C'est la bonne réponse."
+      : "Pas tout à fait. La bonne réponse est Mercure.";
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[c]));
+}
+
+async function loadLessons() {
+  try {
+    const data = await api("/api/lessons");
+
+    $("lessons").innerHTML = data.length
+      ? data.map(l => `
+        <div class="lesson">
+          <b>${escapeHtml(l.title)}</b>
+          · ${escapeHtml(l.subject)}
+          · ${escapeHtml(l.grade)}
+          <p>${escapeHtml(l.content)}</p>
+        </div>
+      `).join("")
+      : "Aucune leçon publiée pour le moment.";
+
+  } catch {
+    $("lessons").textContent =
+      "Impossible de charger les leçons.";
+  }
+}
+
+async function publishLesson() {
+  try {
+    await api("/api/lessons", {
+      method: "POST",
+      body: JSON.stringify({
+        title: $("ltitle").value,
+        subject: $("subject").value,
+        grade: $("grade").value,
+        content: $("content").value
+      })
+    });
+
+    $("teacherMsg").textContent = "Leçon publiée !";
+    loadLessons();
+
+  } catch (e) {
+    $("teacherMsg").textContent = e.message;
+  }
+}
+
+async function createTeacher() {
+  try {
+    await api("/api/creator/teachers", {
+      method: "POST",
+      body: JSON.stringify({
+        name: $("tname").value,
+        email: $("temail").value,
+        password: $("tpass").value
+      })
+    });
+
+    $("creatorMsg").textContent = "Compte professeur créé.";
+
+  } catch (e) {
+    $("creatorMsg").textContent = e.message;
+  }
+}
+
+async function loadUsers() {
+  try {
+    const users = await api("/api/creator/users");
+
+    $("users").innerHTML = users.map(u => `
+      <p>
+        ${escapeHtml(u.name)} —
+        ${escapeHtml(u.email)} —
+        ${escapeHtml(u.role)}
+      </p>
+    `).join("");
+
+  } catch (e) {
+    $("users").textContent = e.message;
+  }
+}
+
+(async () => {
+  loadLessons();
+
+  try {
+    const d = await api("/api/auth/me");
+    currentUser = d.user;
+    renderUser();
+  } catch {}
+})();
+</script>
+
+</body>
+</html>
